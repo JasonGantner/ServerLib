@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class ServerHandleThread extends Thread {
 
-	private Server server;
+	private TcpServer tcpServer;
 	private Socket socket;
 	@Override
 	public void run() {
@@ -28,8 +28,8 @@ public class ServerHandleThread extends Thread {
 		}
 	}
 
-	 public ServerHandleThread(Server server, Socket socket) {
-		this.server=server;
+	 public ServerHandleThread(TcpServer tcpServer, Socket socket) {
+		this.TcpServer=tcpServer;
 		this.socket=socket;
 	}
 

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public abstract class Server implements Runnable{
+public abstract class TcpServer implements Runnable{
 
 	private boolean serverRunning=false;
 	private boolean debuggable=false;
@@ -26,11 +26,11 @@ public abstract class Server implements Runnable{
 
 				//-----------------------------------------
 				if(debuggable){
-				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-				System.out.println(" Request from "
+				System.out.println("########################################");
+				System.out.println("### Request from "
 						   + socket.getInetAddress().getHostName() + " ("
 						   + socket.getInetAddress().getHostAddress() + ")");
-				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+				System.out.println("########################################");
 				}
 				//-----------------------------------------
 				// Gestion de la connexion cliente
@@ -60,7 +60,7 @@ public abstract class Server implements Runnable{
 		serverRunning=false;
 	}
 
-	public Server(int port){
+	public TcpServer(int port){
 		this.port=port;
 	}
 

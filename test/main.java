@@ -1,14 +1,14 @@
 package gantnerj.test;
 
 import gantnerj.lib.HttpServer;
-import gantnerj.lib.Server;
+import gantnerj.lib.TcpServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class main {
-	
+
 	private static boolean runInterface=true;
 	private static boolean runAsDaemon=false;
 	private static int port=8080;
@@ -30,7 +30,7 @@ public class main {
 					debug=true;
 					break;
 				case "-D":
-					
+
 					break;
 			}
 			if(runAsDaemon&&debug){
@@ -38,7 +38,7 @@ public class main {
 				System.out.println("Debbuging disabled due to -D argument.");
 			}
 		}
-		Server server = new HttpServer(port);
+		TcpServer server = new HttpServer(port);
 		Thread serverThread = new Thread(server);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		while(runInterface){
@@ -49,8 +49,8 @@ public class main {
 			if(server.isDebuggable()) System.out.print("Disable");
 			else System.out.print("Enable");
 			System.out.println(" debugging\n\t4 - Quit & kill server\n\t5 - Refresh");
-			try { 
-				String choice = in.readLine(); 
+			try {
+				String choice = in.readLine();
 				switch (choice) {
 					case "1":
 						if(serverThread.isAlive()) server.stop();
@@ -71,7 +71,7 @@ public class main {
 						break;
 					case "3":
 						server.toggleDebuggable();
-						debug=!debug;						
+						debug=!debug;
 						break;
 					case "4":
 						if(server.isRunning()) server.stop();
@@ -85,10 +85,10 @@ public class main {
 			}
 		}
 		while(runAsDaemon){
-			
+
 		}
 	}
-	
+
 	private static void daemonize() throws IOException{
 		runInterface=false;
 		runAsDaemon=true;

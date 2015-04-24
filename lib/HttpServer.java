@@ -12,7 +12,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Vector;
 
-public class HttpServer extends Server {
+public class HttpServer extends TcpServer {
 
 	public static String BASE_FOLDER = "/home/gantnerj/www/Etape 6";
 	public static String INDEX_FILE = "index.html";
