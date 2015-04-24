@@ -8,9 +8,9 @@ import java.net.Socket;
 public abstract class Server implements Runnable{
 
 	private boolean serverRunning=false;
-	protected boolean debuggable=false;
+	private boolean debuggable=false;
 	private int port;
-	
+
 	@Override
 	public void run() {
 		ServerSocket serverSocket;
@@ -23,7 +23,7 @@ public abstract class Server implements Runnable{
 				// Acceptation d'une connexion cliente
 				if(debuggable)System.out.println("Waiting ...");
 				socket = serverSocket.accept();
-				
+
 				//-----------------------------------------
 				if(debuggable){
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -34,9 +34,9 @@ public abstract class Server implements Runnable{
 				}
 				//-----------------------------------------
 				// Gestion de la connexion cliente
-				
+
 				new ServerHandleThread(this, socket).start();
-				
+
 				//-----------------------------------------
 			}
 			serverSocket.close();
@@ -45,25 +45,25 @@ public abstract class Server implements Runnable{
 		e.printStackTrace();
 	}
 	}
-	
+
 	public boolean isRunning(){
 		return serverRunning;
 	}
 	public boolean isDebuggable(){
 		return debuggable;
 	}
-	
+
 	public void toggleDebuggable(){
 		debuggable=!debuggable;
 	}
 	public void stop(){
 		serverRunning=false;
 	}
-	
+
 	public Server(int port){
 		this.port=port;
 	}
-	
+
 	public abstract void handle(String request, OutputStream out);
-	
+
 }

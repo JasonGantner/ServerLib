@@ -13,16 +13,16 @@ import java.net.URLDecoder;
 import java.util.Vector;
 
 public class HttpServer extends Server {
-	
+
 	public static String BASE_FOLDER = "/home/gantnerj/www/Etape 6";
 	public static String INDEX_FILE = "index.html";
 	public static Vector<String> VALID_EXTENSIONS = new Vector<String>();
-	
+
 	public HttpServer(int port) {
 		super(port);
 		this.init();
 	}
-	
+
 	public HttpServer(int port, String BaseFolder){
 		super(port);
 		BASE_FOLDER=BaseFolder;
@@ -37,9 +37,9 @@ public class HttpServer extends Server {
 		if(!VALID_EXTENSIONS.contains("js")) VALID_EXTENSIONS.add("js");
 		if(!VALID_EXTENSIONS.contains("jpg")) VALID_EXTENSIONS.add("jpg");
 		if(!VALID_EXTENSIONS.contains("png")) VALID_EXTENSIONS.add("png");
-		
+
 	}
-	
+
 	@Override
 	public void handle(String request,OutputStream out) {
 		PrintWriter pw = new PrintWriter(out);
@@ -48,10 +48,10 @@ public class HttpServer extends Server {
 			try {
 				File requestedFile=new File(BASE_FOLDER+URLDecoder.decode(req[1].split("\\?")[0]
 						,"UTF-8"));
-				if(this.debuggable) System.out.println("Requested file interpreted as :"+requestedFile.getAbsolutePath());
+				if(super.isDebuggable()) System.out.println("Requested file interpreted as :"+requestedFile.getAbsolutePath());
 				if(requestedFile.isDirectory()){
 					requestedFile=new File(requestedFile.getAbsolutePath()+'/'+INDEX_FILE);
-					if(this.debuggable) System.out.println("Requested File was a directory, reinterpreted as :"+requestedFile.getAbsolutePath());
+					if(super.isDebuggable()) System.out.println("Requested File was a directory, reinterpreted as :"+requestedFile.getAbsolutePath());
 				}
 				String[] path=requestedFile.getAbsolutePath().split("\\.");
 				String ext=path[path.length-1];
@@ -89,16 +89,16 @@ public class HttpServer extends Server {
 				pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Encodage de l'URL pas en UTF-8<h1>");
 				pw.flush();
 			}
-			
+
 		}
 		else if(req[0].equals("HEAD")){
 			try {
 				File requestedFile=new File(BASE_FOLDER+URLDecoder.decode(req[1].split("\\?")[0]
 						,"UTF-8"));
-				if(this.debuggable) System.out.println("Requested file interpreted as :"+requestedFile.getAbsolutePath());
+				if(super.isDebuggable()) System.out.println("Requested file interpreted as :"+requestedFile.getAbsolutePath());
 				if(requestedFile.isDirectory()){
 					requestedFile=new File(requestedFile.getAbsolutePath()+'/'+INDEX_FILE);
-					if(this.debuggable) System.out.println("Requested File was a directory, reinterpreted as :"+requestedFile.getAbsolutePath());
+					if(super.isDebuggable()) System.out.println("Requested File was a directory, reinterpreted as :"+requestedFile.getAbsolutePath());
 				}
 				String[] path=requestedFile.getAbsolutePath().split("\\.");
 				String ext=path[path.length-1];
@@ -136,9 +136,9 @@ public class HttpServer extends Server {
 				pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Encodage de l'URL pas en UTF-8<h1>");
 				pw.flush();
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

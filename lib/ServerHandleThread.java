@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ServerHandleThread extends Thread {
-	
+
 	private Server server;
 	private Socket socket;
 	@Override
@@ -27,7 +27,7 @@ public class ServerHandleThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	 public ServerHandleThread(Server server, Socket socket) {
 		this.server=server;
 		this.socket=socket;
