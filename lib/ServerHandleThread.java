@@ -29,7 +29,7 @@ public class ServerHandleThread extends Thread {
 	}
 
 	 public ServerHandleThread(TcpServer tcpServer, Socket socket) {
-		this.TcpServer = tcpServer;
+		this.tcpServer = tcpServer;
 		this.socket = socket;
 	}
 
