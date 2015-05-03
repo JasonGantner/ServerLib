@@ -9,19 +9,19 @@ public class ServerHandleThread extends Thread {
 
 	private TcpServer tcpServer;
 	private Socket socket;
+
 	@Override
 	public void run() {
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String request="";
-			do
-			{
-				request += br.readLine()+"\n";
+			String request = "";
+			while(socket.isConnected()){
+				do{ request += br.readLine()+"\n"; } while(br.ready());
+				if(tcpServer.isDebuggable()) System.out.print(request);
+				tcpServer.handle(request, socket.getOutputStream());
+				request = "";
 			}
-			while(br.ready());
-			if(server.isDebuggable())System.out.print(request);
-			server.handle(request, socket.getOutputStream());
-			socket.close();
+			if(!socket.isClosed()) socket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,8 +29,8 @@ public class ServerHandleThread extends Thread {
 	}
 
 	 public ServerHandleThread(TcpServer tcpServer, Socket socket) {
-		this.TcpServer=tcpServer;
-		this.socket=socket;
+		this.TcpServer = tcpServer;
+		this.socket = socket;
 	}
 
 }
