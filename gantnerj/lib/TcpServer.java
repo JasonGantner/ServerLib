@@ -7,8 +7,8 @@ import java.net.Socket;
 
 public abstract class TcpServer implements Runnable{
 
-	private boolean serverRunning=false;
-	private boolean debuggable=false;
+	private boolean serverRunning = false;
+	private boolean debuggable = false;
 	private int port;
 
 	@Override
@@ -17,11 +17,11 @@ public abstract class TcpServer implements Runnable{
 		try {
 			serverSocket = new ServerSocket(port);
 			Socket socket;
-			serverRunning=true;
+			serverRunning = true;
 			while(serverRunning){
 				//-----------------------------------------
 				// Acceptation d'une connexion cliente
-				if(debuggable)System.out.println("Waiting ...");
+				if(debuggable)System.out.println("Waiting for incoming connection on port " + port + "...");
 				socket = serverSocket.accept();
 
 				//-----------------------------------------
@@ -54,14 +54,14 @@ public abstract class TcpServer implements Runnable{
 	}
 
 	public void toggleDebuggable(){
-		debuggable=!debuggable;
+		debuggable =! debuggable;
 	}
 	public void stop(){
-		serverRunning=false;
+		serverRunning = false;
 	}
 
 	public TcpServer(int port){
-		this.port=port;
+		this.port = port;
 	}
 
 	public abstract void handle(String request, OutputStream out);

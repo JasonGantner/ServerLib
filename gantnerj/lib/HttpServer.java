@@ -14,7 +14,7 @@ import java.util.Vector;
 
 public class HttpServer extends TcpServer {
 
-	public static String BASE_FOLDER = "/home/gantnerj/www/Etape 6";
+	public static String BASE_FOLDER = "/var/www/";
 	public static String INDEX_FILE = "index.html";
 	public static Vector<String> VALID_EXTENSIONS = new Vector<String>();
 
@@ -46,48 +46,34 @@ public class HttpServer extends TcpServer {
 		String[]req = request.split(" ");
 		if(req[0].equals("GET")){
 			try {
-				File requestedFile=new File(BASE_FOLDER+URLDecoder.decode(req[1].split("\\?")[0]
-						,"UTF-8"));
+				File requestedFile=new File(BASE_FOLDER+URLDecoder.decode(req[1].split("\\?")[0],"UTF-8"));
 				if(super.isDebuggable()) System.out.println("Requested file interpreted as :"+requestedFile.getAbsolutePath());
 				if(requestedFile.isDirectory()){
-					requestedFile=new File(requestedFile.getAbsolutePath()+'/'+INDEX_FILE);
+					requestedFile = new File(requestedFile.getAbsolutePath()+'/'+INDEX_FILE);
 					if(super.isDebuggable()) System.out.println("Requested File was a directory, reinterpreted as :"+requestedFile.getAbsolutePath());
 				}
-				String[] path=requestedFile.getAbsolutePath().split("\\.");
-				String ext=path[path.length-1];
+				String[] path = requestedFile.getAbsolutePath().split("\\.");
+				String ext = path[path.length-1];
 				if(VALID_EXTENSIONS.contains(ext)){
 					try {
 						BufferedInputStream bis =  new BufferedInputStream(new FileInputStream(requestedFile));
-						String mimeType = URLConnection.getFileNameMap().getContentTypeFor(requestedFile.getAbsolutePath());
-						switch(ext){
-							case "css":
-								mimeType="text/css";
-								break;
-							case "js":
-								mimeType="application/javascript";
-								break;
-							default: break;
-						}
-						pw.print("HTTP/1.0 200 OK\nContent-type: "+mimeType+"\n\n");
+						pw.print("HTTP/1.0 200 OK\nContent-type: "+generateMimeType(requestedFile)+"\n\n");
 						pw.flush();
 						while(bis.available()>0) out.write(bis.read());
 						out.flush();
 						bis.close();
 					} catch (FileNotFoundException e) {
-						pw.print("HTTP/1.0 404 Not Found\nContent-type: text/html\n\n<h1>Impossible de trouver le fichier<h1>");
+						error(pw, 404, "Impossible de trouver le fichier");
 						pw.flush();
 					} catch (IOException e) {
-						pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Erreur dans le traitement coté serveur<h1>");
-						pw.flush();
+						error(pw,500,"Le serveur rencontre des problèmes");
 					}
 				}
 				else{
-					pw.print("HTTP/1.0 403 Forbidden\nContent-type: text/html\n\n<h1>Ce contenu n'est pas accessible<h1>");
-					pw.flush();
+					error(pw, 403, "Ce contenu n'est pas accessible");
 				}
 			} catch (UnsupportedEncodingException e1) {
-				pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Encodage de l'URL pas en UTF-8<h1>");
-				pw.flush();
+				error(pw,500,"Encodage de l'URL pas en UTF-8");
 			}
 
 		}
@@ -105,40 +91,55 @@ public class HttpServer extends TcpServer {
 				if(VALID_EXTENSIONS.contains(ext)){
 					try {
 						BufferedInputStream bis =  new BufferedInputStream(new FileInputStream(requestedFile));
-						String mimeType = URLConnection.getFileNameMap().getContentTypeFor(requestedFile.getAbsolutePath());
-						switch(ext){
-							case "css":
-								mimeType="text/css";
-								break;
-							case "js":
-								mimeType="application/javascript";
-								break;
-							default: break;
-						}
 						pw.print("HTTP/1.0 200 OK\nContent-type: "+mimeType+"\n\n");
 						pw.flush();
 						while(bis.available()>0) bis.read();
 						out.flush();
 						bis.close();
 					} catch (FileNotFoundException e) {
-						pw.print("HTTP/1.0 404 Not Found\nContent-type: text/html\n\n<h1>Impossible de trouver le fichier<h1>");
-						pw.flush();
+						error(pw, 404, "Impossible de trouver le fichier");
 					} catch (IOException e) {
-						pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Erreur dans le traitement coté serveur<h1>");
-						pw.flush();
+						error(500);
 					}
 				}
 				else{
-					pw.print("HTTP/1.0 403 Forbidden\nContent-type: text/html\n\n<h1>Ce contenu n'est pas accessible<h1>");
-					pw.flush();
+					error(pw, 403, "Ce contenu n'est pas accessible");
 				}
 			} catch (UnsupportedEncodingException e1) {
-				pw.print("HTTP/1.0 500 Internal Server Error\nContent-type: text/html\n\n<h1>Encodage de l'URL pas en UTF-8<h1>");
-				pw.flush();
+				error(pw, 500, "Encodage de l'URL pas en UTF-8");
 			}
-
 		}
+	}
+	void error(PrintWriter pw, int errorCode){
 
+	}
+	void error(PrintWirter pw, int errorCode, String message){
+		//TODO empty pw if data already in it
+		pw.print("HTTP/1.0 ")
+		if(errorCode==404){} pw.print("404 Not Found");
+		else if(errorCode==403) pw.print("404 Forbidden");
+		else if(errorCode==500) pw.print("500 Internal Server Error");
+		pw.print("\nContent-type: text/html\n\n<h1>" + messsage + "<h1>");
+		pw.flush;
+
+	}
+
+	String generateMimeType(File file){
+		String[] path = file.getAbsolutePath().split("\\.");
+		String ext = path[path.length-1];
+		String mimeType;
+		switch(ext){
+			case "css":
+				mimeType = "text/css";
+				break;
+			case "js":
+				mimeType = "application/javascript";
+				break;
+			default:
+				mimeType = URLConnection.getFileNameMap().getContentTypeFor(file.getAbsolutePath());
+				break;
+		}
+		return mimeType;
 	}
 
 }

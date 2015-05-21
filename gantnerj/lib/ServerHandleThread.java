@@ -32,5 +32,4 @@ public class ServerHandleThread extends Thread {
 		this.tcpServer = tcpServer;
 		this.socket = socket;
 	}
-
 }
