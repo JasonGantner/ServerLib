@@ -15,11 +15,16 @@ public class ServerHandleThread extends Thread {
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String request = "";
+			String line;
 			while(socket.isConnected()){
-				do{ request += br.readLine()+"\n"; } while(br.ready());
-				if(tcpServer.isDebuggable()) System.out.print(request);
-				tcpServer.handle(request, socket.getOutputStream());
-				request = "";
+				if(br.ready()){
+					do {
+						if((line=br.readLine())!=null) request += line+"\n";
+						} while(br.ready());
+					if(tcpServer.isDebuggable()) System.out.print(request);
+					tcpServer.handle(request, socket.getOutputStream());
+					request = "";
+				}
 			}
 			if(!socket.isClosed()) socket.close();
 		} catch (IOException e) {

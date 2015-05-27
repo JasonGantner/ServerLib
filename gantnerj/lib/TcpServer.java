@@ -19,25 +19,10 @@ public abstract class TcpServer implements Runnable{
 			Socket socket;
 			serverRunning = true;
 			while(serverRunning){
-				//-----------------------------------------
-				// Acceptation d'une connexion cliente
-				if(debuggable)System.out.println("Waiting for incoming connection on port " + port + "...");
+				if(debuggable) System.out.println("Waiting for incoming connection on port " + port + "...");
 				socket = serverSocket.accept();
-
-				//-----------------------------------------
-				if(debuggable){
-				System.out.println("########################################");
-				System.out.println("### Request from "
-						   + socket.getInetAddress().getHostName() + " ("
-						   + socket.getInetAddress().getHostAddress() + ")");
-				System.out.println("########################################");
-				}
-				//-----------------------------------------
-				// Gestion de la connexion cliente
-
+				if(debuggable) System.out.println("Request from " + socket.getInetAddress().getHostName() + " (" + socket.getInetAddress().getHostAddress() + ")");
 				new ServerHandleThread(this, socket).start();
-
-				//-----------------------------------------
 			}
 			serverSocket.close();
 		} catch (IOException e) {

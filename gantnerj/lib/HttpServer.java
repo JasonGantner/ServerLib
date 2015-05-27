@@ -1,4 +1,4 @@
-package gantnerj.lib;
+﻿package gantnerj.lib;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -14,8 +14,8 @@ import java.util.Vector;
 
 public class HttpServer extends TcpServer {
 
-	public static String BASE_FOLDER = "/var/www/";
-	public static String INDEX_FILE = "index.html";
+	public String BASE_FOLDER = "/var/www/";
+	public String INDEX_FILE = "index.html";
 	public static Vector<String> VALID_EXTENSIONS = new Vector<String>();
 
 	public HttpServer(int port) {
@@ -75,7 +75,6 @@ public class HttpServer extends TcpServer {
 			} catch (UnsupportedEncodingException e1) {
 				error(pw,500,"Encodage de l'URL pas en UTF-8");
 			}
-
 		}
 		else if(req[0].equals("HEAD")){
 			try {
@@ -91,15 +90,16 @@ public class HttpServer extends TcpServer {
 				if(VALID_EXTENSIONS.contains(ext)){
 					try {
 						BufferedInputStream bis =  new BufferedInputStream(new FileInputStream(requestedFile));
-						pw.print("HTTP/1.0 200 OK\nContent-type: "+mimeType+"\n\n");
+						pw.print("HTTP/1.0 200 OK\nContent-type: "+generateMimeType(requestedFile)+"\n\n");
 						pw.flush();
 						while(bis.available()>0) bis.read();
 						out.flush();
 						bis.close();
+
 					} catch (FileNotFoundException e) {
 						error(pw, 404, "Impossible de trouver le fichier");
 					} catch (IOException e) {
-						error(500);
+						error(pw,500);
 					}
 				}
 				else{
@@ -109,19 +109,19 @@ public class HttpServer extends TcpServer {
 				error(pw, 500, "Encodage de l'URL pas en UTF-8");
 			}
 		}
+		pw.flush();
 	}
 	void error(PrintWriter pw, int errorCode){
 
 	}
-	void error(PrintWirter pw, int errorCode, String message){
+	void error(PrintWriter pw, int errorCode, String message){
 		//TODO empty pw if data already in it
-		pw.print("HTTP/1.0 ")
-		if(errorCode==404){} pw.print("404 Not Found");
+		pw.print("HTTP/1.0 ");
+		if(errorCode==404) pw.print("404 Not Found");
 		else if(errorCode==403) pw.print("404 Forbidden");
 		else if(errorCode==500) pw.print("500 Internal Server Error");
-		pw.print("\nContent-type: text/html\n\n<h1>" + messsage + "<h1>");
-		pw.flush;
-
+		pw.print("\nContent-type: text/html\n\n" + message);
+		pw.flush();
 	}
 
 	String generateMimeType(File file){

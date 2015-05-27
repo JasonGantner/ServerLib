@@ -7,16 +7,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class main {
+class main{
 
 	private static boolean runInterface=true;
 	private static boolean runAsDaemon=false;
 	private static int port=8080;
 	private static boolean debug=false;
+	private static String baseDir="/var/www";
 	/**
 	 * @param args
 	 */
-	public static main(String[] args) {
+	public static void main(String[] args) {
 		for(int i=0;i<args.length;i++){
 			switch(args[i]){
 				case "-p":
@@ -29,8 +30,13 @@ public class main {
 				case "-d":
 					debug=true;
 					break;
+				case "--daemon":
 				case "-D":
-
+					runAsDaemon=true;
+					break;
+				case "-b":
+				case "--baseDir":
+					baseDir=args[i+1];
 					break;
 			}
 			if(runAsDaemon&&debug){
@@ -38,7 +44,7 @@ public class main {
 				System.out.println("Debbuging disabled due to -D argument.");
 			}
 		}
-		TcpServer server = new HttpServer(port);
+		TcpServer server = new HttpServer(port,baseDir);
 		Thread serverThread = new Thread(server);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		while(runInterface){
